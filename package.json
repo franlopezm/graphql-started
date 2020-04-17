@@ -1,0 +1,16 @@
+{
+    "name": "graphql-started",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon ./index"
+    },
+    "author": "Francisco López Muñoz",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "express-graphql": "^0.9.0",
+        "graphql": "^15.0.0"
+    }
+}
