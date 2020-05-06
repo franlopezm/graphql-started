@@ -7,7 +7,11 @@ const fakeData = {
     a: {
         id: 'a',
         name: 'alice',
-        courseId: 1
+        courseId: 1,
+        claseIds: [{
+            id: 1,
+            grupoId: "b"
+        }]
     },
     b: {
         id: 'b',
@@ -36,11 +40,62 @@ const courseData = {
     }
 }
 
+const claseData = {
+    1: {
+        id: 1,
+        name: "Segundo"
+    }
+}
+
+const grupoData = {
+    "b": {
+        id: "b",
+        name: "B"
+    }
+}
+
 const courseType = new graphql.GraphQLObjectType({
     name: 'Course',
     fields: {
         id: { type: graphql.GraphQLInt },
         name: { type: graphql.GraphQLString }
+    }
+})
+
+const groupType = new graphql.GraphQLObjectType({
+    name: 'Group',
+    fields: {
+        id: { type: graphql.GraphQLString },
+        name: { type: graphql.GraphQLString }
+    }
+})
+
+const classType = new graphql.GraphQLObjectType({
+    name: 'Class',
+    fields: {
+        id: { type: graphql.GraphQLInt },
+        name: { type: graphql.GraphQLString },
+        group: {
+            type: groupType,
+            resolve: function (root, args, context) {
+                return grupoData[context.class.grupoId]
+            }
+        }
+    }
+})
+
+const claseIdsType = new graphql.GraphQLObjectType({
+    name: 'claseIdsType',
+    fields: {
+        id: { type: graphql.GraphQLInt },
+        grupoId: { type: graphql.GraphQLString },
+        class: {
+            type: classType,
+            resolve: function (root, args, context) {
+                context.class = root
+                return claseData[root.id]
+            }
+        }
     }
 })
 
@@ -55,6 +110,9 @@ const userType = new graphql.GraphQLObjectType({
             resolve: function (user) {
                 return courseData[user.courseId]
             }
+        },
+        claseIds: {
+            type: new graphql.GraphQLList(claseIdsType)
         }
     }
 })
