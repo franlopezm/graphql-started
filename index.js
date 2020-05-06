@@ -6,19 +6,56 @@ const crypto = require('crypto')
 const fakeData = {
     a: {
         id: 'a',
-        name: 'alice'
+        name: 'alice',
+        courseId: 1
     },
     b: {
         id: 'b',
-        name: 'bob'
+        name: 'bob',
+        courseId: 2
+    },
+    c: {
+        id: 'c',
+        name: 'bob',
+        courseId: 4
     }
 }
+
+const courseData = {
+    1: {
+        id: 1,
+        name: 'Inglés'
+    },
+    2: {
+        id: 2,
+        name: 'Francés'
+    },
+    4: {
+        id: 4,
+        name: 'Alemán'
+    }
+}
+
+const courseType = new graphql.GraphQLObjectType({
+    name: 'Course',
+    fields: {
+        id: { type: graphql.GraphQLInt },
+        name: { type: graphql.GraphQLString }
+    }
+})
 
 const userType = new graphql.GraphQLObjectType({
     name: 'User',
     fields: {
         id: { type: graphql.GraphQLString },
-        name: { type: graphql.GraphQLString }
+        name: { type: graphql.GraphQLString },
+        courseId: { type: graphql.GraphQLInt },
+        course: {
+            type: courseType,
+            resolve: function (user) {
+                return courseData[user.courseId]
+            }
+        }
     }
 })
 
@@ -74,4 +111,4 @@ app.use('/graphql', expressGraphql({
 }))
 
 app.listen(4000)
-console.log('Running a GraphQL API server at localhost:4000/graphql')
+console.log('Running a GraphQL API server at http://localhost:4000/graphql')
